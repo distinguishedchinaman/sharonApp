@@ -1,5 +1,5 @@
 // Local journal data stays in localStorage, separate from disposable app caches.
-const CACHE = 'one-more-game-v3';
+const CACHE = 'one-more-game-v4';
 const PAGES = ['/', '/history', '/stats', '/more'];
 self.addEventListener('install', event => {
   self.skipWaiting();

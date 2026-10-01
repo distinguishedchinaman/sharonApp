@@ -24,6 +24,6 @@ export function GameCard({ game, onOpen, compact = false }: { game: Game; onOpen
   </button>;
 }
 export function EmptyState({ title = 'Your story starts here.', text = 'Two scores. A few good words. Record your first game together.', action }: { title?: string; text?: string; action?: React.ReactNode }) {
-  return <div className="empty-state"><div className="empty-tiles"><Tile letter="B" points={3} /><Tile letter="S" /></div><h3>{title}</h3><p>{text}</p>{action}</div>;
+  return <div className="empty-state"><div className="empty-tiles"><Tile letter="S" /><Tile letter="B" points={3} /></div><h3>{title}</h3><p>{text}</p>{action}</div>;
 }
 export function number(value: number | null, digits = 0) { return value === null ? '—' : value.toLocaleString('en', { maximumFractionDigits: digits, minimumFractionDigits: digits }); }
