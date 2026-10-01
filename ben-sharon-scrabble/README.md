@@ -2,6 +2,10 @@
 
 A personal Scrabble journal for Ben and Sharon. Record two scores in a few taps, keep the game’s story and a photo, and watch your friendly rivalry grow. The design uses warm cream, original letter-tile illustrations, and muted green, with bottom navigation on phones.
 
+## Shared cloud journal
+
+Shared Supabase storage, invited email sign-in, private photos, live refresh, and local-data import are implemented. Follow [the activation guide](supabase/README.md) to configure the existing project and Vercel deployment. Until both public Supabase environment variables are supplied, the app retains its original local mode described below.
+
 ## Run it
 
 Use Node.js 22.13 or newer (Node 24 is recommended). From the repository:
@@ -12,7 +16,7 @@ npm ci
 npm run dev
 ```
 
-Open `http://localhost:3000` in your browser. If your terminal is already in `ben-sharon-scrabble`, skip the `cd` line. No accounts, API keys, or Supabase configuration are needed.
+Open `http://localhost:3000` in your browser. If your terminal is already in `ben-sharon-scrabble`, skip the `cd` line. No accounts, API keys, or Supabase configuration are needed for local mode.
 
 For the production version:
 
@@ -36,7 +40,7 @@ The production server listens on all network interfaces so a phone on the same t
 - Ten visibly marked **sample games** on the first visit. They are not Ben and Sharon’s actual history. **More → Delete sample data** removes just the sample entries; real games and profiles stay. Samples are not re-added after deletion.
 - A web app manifest, home-screen icons, and basic offline caching in production after an online visit. Visit each page online first; ratings require a connection. Development mode does not register a service worker.
 
-## Where your data lives
+## Where your data lives in local mode
 
 Games, player ratings, and embedded photos are stored in this browser’s `localStorage` under `one-more-game:journal:v1`. They survive refreshing and closing the browser. They do **not** automatically synchronize between Ben’s phone and Sharon’s phone, different browsers, deployments, or port numbers. Private browsing may discard data when closed. Clearing site data deletes the journal.
 

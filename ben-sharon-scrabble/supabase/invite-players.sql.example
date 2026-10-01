@@ -1,0 +1,8 @@
+-- Run in Supabase SQL Editor as the project owner AFTER the migration.
+-- Replace the two placeholder emails. No service-role key is needed in the app.
+insert into public.household_invites(email, household_id, player_id)
+select lower('BEN_EMAIL_HERE'), id, 'ben' from public.households where slug = 'ben-sharon'
+on conflict (email) do nothing;
+insert into public.household_invites(email, household_id, player_id)
+select lower('SHARON_EMAIL_HERE'), id, 'sharon' from public.households where slug = 'ben-sharon'
+on conflict (email) do nothing;

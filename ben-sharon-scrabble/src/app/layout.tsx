@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { CloudProvider } from '@/components/cloud-provider';
 export const metadata: Metadata = {
   title: 'One More Game · Ben & Sharon',
   description: 'A little friendly rivalry. A personal Scrabble journal for Ben and Sharon.',
@@ -10,5 +11,5 @@ export const metadata: Metadata = {
 };
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#f8f6ef' };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="en"><body>{children}</body></html>;
+  return <html lang="en"><body><CloudProvider>{children}</CloudProvider></body></html>;
 }

@@ -12,6 +12,7 @@ export interface Game {
   firstPlayer: PlayerId | '';
   notes: string;
   photoUrl: string | null;
+  photoPath?: string;
   isSample: boolean;
   createdAt: string;
   updatedAt: string;

@@ -2,10 +2,11 @@ import { Journal } from './model';
 import { sampleJournal } from './sample';
 import { validateJournal } from './validation';
 export const STORAGE_KEY = 'one-more-game:journal:v1';
-// Replace this adapter with a household-scoped Supabase repository in Phase 2.
+export interface SaveOptions { replaceAll?: boolean }
 export interface JournalRepository {
   load(): Promise<Journal>;
-  save(journal: Journal, expected?: Journal): Promise<void>;
+  save(journal: Journal, expected?: Journal, options?: SaveOptions): Promise<Journal | void>;
+  export?(journal: Journal): Promise<Journal>;
 }
 export const localRepository: JournalRepository = {
   async load() {
