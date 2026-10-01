@@ -11,7 +11,16 @@ export interface JournalRepository {
 export const localRepository: JournalRepository = {
   async load() {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw !== null) return validateJournal(JSON.parse(raw));
+    if (raw !== null) {
+      const parsed = JSON.parse(raw);
+      const journal = validateJournal(parsed);
+      if (parsed.games.some((game: { gameType: string }) => ['Casual', 'Tournament', 'Club', 'Practice', 'Other'].includes(game.gameType))) {
+        // Preserve the original bytes before the user-requested category migration.
+        if (!localStorage.getItem(`${STORAGE_KEY}:before-categories`)) localStorage.setItem(`${STORAGE_KEY}:before-categories`, raw);
+        await this.save(journal);
+      }
+      return journal;
+    }
     const initial = sampleJournal();
     await this.save(initial);
     return initial;

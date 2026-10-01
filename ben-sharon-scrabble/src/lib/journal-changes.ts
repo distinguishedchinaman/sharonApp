@@ -5,7 +5,7 @@ export function storedGame(game: Game): StoredGame {
   // Signed display URLs expire and must never be used in conflict comparisons.
   const { photoUrl: _displayUrl, photoPath, ...data } = game;
   void _displayUrl;
-  return { ...data, photoUrl: null, photoPath: photoPath ?? null };
+  return { ...data, ...(game.additionalPhotos !== undefined ? { additionalPhotos: game.additionalPhotos.map(p => ({ id: p.id, photoUrl: null, photoPath: p.photoPath ?? undefined })) } : {}), photoUrl: null, photoPath: photoPath ?? null };
 }
 export function sameValue(a: unknown, b: unknown): boolean {
   if (a === b) return true;

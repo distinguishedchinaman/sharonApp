@@ -1,5 +1,10 @@
-export const GAME_TYPES = ['Casual', 'Tournament', 'Club', 'Practice', 'Other'] as const;
-export type GameType = (typeof GAME_TYPES)[number];
+export const GAME_TYPES = ['In Person - Morning', 'In Person - Afternoon', 'In Person - Evening', 'Woogles - League', 'Woogles - Correspondence'] as const;
+export const LEGACY_GAME_TYPES = ['Casual', 'Tournament', 'Club', 'Practice', 'Other'] as const;
+export type GameType = (typeof GAME_TYPES)[number] | (typeof LEGACY_GAME_TYPES)[number];
+export interface GamePhoto { id: string; photoUrl: string | null; photoPath?: string }
+export const gameCategory = (game: Pick<Game, 'gameType'>) => game.gameType.startsWith('In Person - ') ? 'In Person' : game.gameType.startsWith('Woogles - ') ? 'Woogles' : 'Uncategorized';
+export const matchesGameType = (game: Game, filter: string) => filter === 'all' || game.gameType === filter || gameCategory(game) === filter;
+export const gamePhotos = (game: { photoUrl: string | null; photoPath?: string | null; additionalPhotos?: GamePhoto[] }): GamePhoto[] => [...(game.photoUrl || game.photoPath ? [{ id: 'primary', photoUrl: game.photoUrl, photoPath: game.photoPath ?? undefined }] : []), ...(game.additionalPhotos ?? [])];
 export type PlayerId = 'ben' | 'sharon';
 export type Winner = PlayerId | 'tie';
 export interface Game {
@@ -13,6 +18,9 @@ export interface Game {
   notes: string;
   photoUrl: string | null;
   photoPath?: string;
+  additionalPhotos?: GamePhoto[];
+  benBingos?: string[];
+  sharonBingos?: string[];
   isSample: boolean;
   createdAt: string;
   updatedAt: string;

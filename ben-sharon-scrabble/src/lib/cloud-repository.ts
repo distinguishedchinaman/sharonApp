@@ -1,5 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Game, Journal, Player } from './model';
+import { Game, gamePhotos, Journal, Player } from './model';
 import { journalChanges, storedGame, StoredGame } from './journal-changes';
 import { JournalRepository, SaveOptions } from './storage';
 import { validateJournal } from './validation';
@@ -11,7 +11,7 @@ export class CloudRepository implements JournalRepository {
   private revisions = new WeakMap<Journal, number>();
   constructor(readonly client: SupabaseClient, readonly householdId: string) {}
   private async hydrate(snapshot: Snapshot): Promise<Journal> {
-    const paths = snapshot.games.flatMap(g => g.photoPath ? [g.photoPath] : []);
+    const paths = snapshot.games.flatMap(g => gamePhotos(g).flatMap(p => p.photoPath ? [p.photoPath] : []));
     const urls = new Map<string, string>();
     if (paths.length) {
       const { data, error } = await this.client.storage.from(BUCKET).createSignedUrls(paths, PHOTO_TTL);
@@ -19,7 +19,7 @@ export class CloudRepository implements JournalRepository {
       for (const entry of data ?? []) if (entry.path && entry.signedUrl && !entry.error) urls.set(entry.path, entry.signedUrl);
       if (paths.some(path => !urls.has(path))) throw new Error('A saved photo could not be loaded. Your cloud data has not been changed.');
     }
-    const journal = validateJournal({ version: 1, games: snapshot.games.map(g => ({ ...g, photoPath: g.photoPath ?? undefined, photoUrl: g.photoPath ? urls.get(g.photoPath) ?? null : null })), players: snapshot.players }, true);
+    const journal = validateJournal({ version: 1, games: snapshot.games.map(g => ({ ...g, photoPath: g.photoPath ?? undefined, photoUrl: g.photoPath ? urls.get(g.photoPath) ?? null : null, ...(g.additionalPhotos !== undefined ? { additionalPhotos: g.additionalPhotos.map(p => ({ ...p, photoUrl: p.photoPath ? urls.get(p.photoPath) ?? null : null })) } : {}) })), players: snapshot.players }, true);
     this.revisions.set(journal, snapshot.revision);
     return journal;
   }
@@ -37,7 +37,23 @@ export class CloudRepository implements JournalRepository {
     const uploaded: string[] = [];
     let posted = false;
     try {
-      for (const game of next.games) {
+      for (const originalGame of next.games) {
+        let game = originalGame;
+        if (game.additionalPhotos !== undefined) {
+          const extra = [];
+          for (const photo of game.additionalPhotos) {
+            const oldPhoto = expected.games.find(g => g.id === game.id)?.additionalPhotos?.find(p => p.id === photo.id);
+            if (photo.photoUrl?.startsWith('data:') && !(photo.photoPath && photo.photoPath === oldPhoto?.photoPath && photo.photoUrl === oldPhoto.photoUrl)) {
+              const blob = await (await fetch(photo.photoUrl)).blob();
+              const extension = blob.type === 'image/png' ? 'png' : blob.type === 'image/webp' ? 'webp' : 'jpg';
+              const path = `${this.householdId}/${game.id}/${crypto.randomUUID()}.${extension}`;
+              const { error } = await this.client.storage.from(BUCKET).upload(path, blob, { contentType: blob.type, upsert: false });
+              if (error) throw new Error('A photo could not be uploaded. The game has not been saved.');
+              uploaded.push(path); extra.push({ id: photo.id, photoPath: path, photoUrl: null });
+            } else extra.push(photo);
+          }
+          game = { ...game, additionalPhotos: extra };
+        }
         const old = expected.games.find(g => g.id === game.id);
         if (game.photoUrl?.startsWith('data:') && !(game.photoPath && game.photoPath === old?.photoPath && game.photoUrl === old.photoUrl)) {
           const blob = await (await fetch(game.photoUrl)).blob();
@@ -64,7 +80,7 @@ export class CloudRepository implements JournalRepository {
       const snapshot = data as Snapshot;
       try { return await this.hydrate(snapshot); } catch { /* The committed data remains safe; a live refresh will retry photo signing. */ }
       const known = new Map(next.games.map(g => [g.id, g.photoUrl]));
-      const saved = validateJournal({ version: 1, games: snapshot.games.map(g => ({ ...g, photoPath: g.photoPath ?? undefined, photoUrl: g.photoPath ? known.get(g.id) ?? null : null })), players: snapshot.players }, true);
+      const saved = validateJournal({ version: 1, games: snapshot.games.map(g => ({ ...g, photoPath: g.photoPath ?? undefined, photoUrl: g.photoPath ? known.get(g.id) ?? null : null, ...(g.additionalPhotos !== undefined ? { additionalPhotos: g.additionalPhotos.map(p => ({ ...p, photoUrl: next.games.find(game => game.id === g.id)?.additionalPhotos?.find(photo => photo.id === p.id)?.photoUrl ?? null })) } : {}) })), players: snapshot.players }, true);
       this.revisions.set(saved, snapshot.revision);
       return saved;
     } catch (error) {
@@ -82,6 +98,19 @@ export class CloudRepository implements JournalRepository {
         const { data, error } = await this.client.storage.from(BUCKET).download(photoPath);
         if (error || !data) throw new Error('A photo could not be downloaded. No incomplete backup was exported; retry when connected.');
         portable.photoUrl = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = () => reject(new Error('Could not prepare a photo for backup.')); reader.readAsDataURL(data); });
+      }
+      if (portable.additionalPhotos !== undefined) {
+        const extra = [];
+        for (const photo of portable.additionalPhotos) {
+          let url = photo.photoUrl;
+          if (photo.photoPath) {
+            const { data, error } = await this.client.storage.from(BUCKET).download(photo.photoPath);
+            if (error || !data) throw new Error('A photo could not be downloaded. No incomplete backup was exported.');
+            url = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = () => reject(new Error('Could not prepare a photo for backup.')); reader.readAsDataURL(data); });
+          }
+          extra.push({ id: photo.id, photoUrl: url });
+        }
+        portable.additionalPhotos = extra;
       }
       games.push(portable);
     }

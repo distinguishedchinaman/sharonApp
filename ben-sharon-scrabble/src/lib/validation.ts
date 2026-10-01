@@ -1,4 +1,4 @@
-import { DEFAULT_PLAYERS, GAME_TYPES, Game, Journal, Player } from './model';
+import { DEFAULT_PLAYERS, GAME_TYPES, LEGACY_GAME_TYPES, GamePhoto, Game, Journal, Player } from './model';
 const isObject = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
 const integer = (value: unknown, min: number, max: number) => typeof value === 'number' && Number.isInteger(value) && value >= min && value <= max;
 const text = (value: unknown, max: number): value is string => typeof value === 'string' && value.length <= max;
@@ -12,7 +12,7 @@ export function validateGame(value: unknown, allowCloudPhotos = false): Game {
   if (!isObject(value) || !text(value.id, 100) || !/^[A-Za-z0-9_-]{1,100}$/.test(value.id) || !validDate(value.date) ||
     !integer(value.benScore, 0, 9999) || !integer(value.sharonScore, 0, 9999) ||
     !text(value.location, 120) || !text(value.notes, 5000) ||
-    !GAME_TYPES.includes(value.gameType as Game['gameType']) || (typeof value.firstPlayer !== 'string' || !['ben', 'sharon', ''].includes(value.firstPlayer)) ||
+    ![...GAME_TYPES, ...LEGACY_GAME_TYPES].includes(value.gameType as never) || (typeof value.firstPlayer !== 'string' || !['ben', 'sharon', ''].includes(value.firstPlayer)) ||
     typeof value.isSample !== 'boolean' || !timestamp(value.createdAt) || !timestamp(value.updatedAt)) {
     throw new Error('A game has missing or invalid fields. Scores must be whole numbers from 0 to 9,999 and dates must be valid.');
   }
@@ -22,7 +22,24 @@ export function validateGame(value: unknown, allowCloudPhotos = false): Game {
   if (value.photoUrl !== null && !signedPhoto && !(text(value.photoUrl, 900_000) && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(value.photoUrl))) {
     throw new Error('A photo is invalid. Backups must use embedded JPEG, PNG, or WebP images.');
   }
-  return { id: value.id, date: value.date, benScore: value.benScore as number, sharonScore: value.sharonScore as number, location: value.location, gameType: value.gameType as Game['gameType'], firstPlayer: value.firstPlayer as Game['firstPlayer'], notes: value.notes, photoUrl: value.photoUrl as string | null, isSample: value.isSample, createdAt: value.createdAt, updatedAt: value.updatedAt, ...(typeof photoPath === 'string' ? { photoPath } : {}) };
+  const bingos = (field: string) => {
+    const words = value[field];
+    if (words === undefined) return undefined;
+    if (!Array.isArray(words) || words.length > 50 || words.some(word => typeof word !== 'string' || !/^[A-Za-z?]{2,30}$/.test(word))) throw new Error('Enter bingo words separated by commas, using letters or ? for blanks.');
+    return words.map(word => String(word).toUpperCase());
+  };
+  const benBingos = bingos('benBingos'), sharonBingos = bingos('sharonBingos');
+  let additionalPhotos: GamePhoto[] | undefined;
+  if (value.additionalPhotos !== undefined) {
+    if (!Array.isArray(value.additionalPhotos) || value.additionalPhotos.length > 11) throw new Error('A game can have up to 12 photos.');
+    additionalPhotos = value.additionalPhotos.map(photo => {
+      if (!isObject(photo) || !text(photo.id, 100) || !/^[A-Za-z0-9_-]{1,100}$/.test(photo.id)) throw new Error('Invalid photo ID.');
+      const checked = validateGame({ ...value, additionalPhotos: undefined, photoUrl: photo.photoUrl, photoPath: photo.photoPath }, allowCloudPhotos);
+      return { id: photo.id, photoUrl: checked.photoUrl, ...(checked.photoPath ? { photoPath: checked.photoPath } : {}) };
+    });
+    if (new Set(additionalPhotos.map(photo => photo.id)).size !== additionalPhotos.length || additionalPhotos.some(photo => photo.id === 'primary')) throw new Error('Duplicate photo IDs.');
+  }
+  return { id: value.id, date: value.date, benScore: value.benScore as number, sharonScore: value.sharonScore as number, location: value.location, gameType: !allowCloudPhotos && LEGACY_GAME_TYPES.includes(value.gameType as never) ? 'In Person - Evening' : value.gameType as Game['gameType'], firstPlayer: value.firstPlayer as Game['firstPlayer'], notes: value.notes, photoUrl: value.photoUrl as string | null, isSample: value.isSample, createdAt: value.createdAt, updatedAt: value.updatedAt, ...(additionalPhotos !== undefined ? { additionalPhotos } : {}), ...(benBingos !== undefined ? { benBingos } : {}), ...(sharonBingos !== undefined ? { sharonBingos } : {}), ...(typeof photoPath === 'string' ? { photoPath } : {}) };
 }
 function validatePlayer(value: unknown): Player {
   if (!isObject(value) || (typeof value.id !== 'string' || !['ben', 'sharon'].includes(value.id)) || !text(value.name, 60) || !value.name.trim() ||

@@ -9,7 +9,7 @@ async function nav(page: Page, name: string) {
 }
 async function openRecord(page: Page) {
   const mobile = (page.viewportSize()?.width ?? 1440) <= 700;
-  await page.locator(mobile ? '.mobile-record' : '.header-record').click();
+  await page.locator(mobile ? '.mobile-record' : '.sidebar-record').click();
   await expect(page.getByRole('dialog')).toBeVisible();
 }
 async function games(page: Page): Promise<Game[]> { return page.evaluate(key => JSON.parse(localStorage.getItem(key)!).games, KEY); }
@@ -49,18 +49,31 @@ test('record, photo, refresh persistence, details, edit, and confirmed deletion'
   await dialog.getByLabel('Location', { exact: true }).fill('Our kitchen');
   await dialog.getByLabel('A note to remember').fill('A lovely real game.');
   await dialog.getByLabel('Who went first?').selectOption('sharon');
-  await dialog.getByLabel('Game photo').setInputFiles('public/icon-192.png');
-  await expect(dialog.getByAltText('Photo attached to this game')).toBeVisible();
+  await dialog.getByLabel('Game photo').setInputFiles(['public/icon-192.png', 'public/icon-512.png']);
+  await expect(dialog.locator('.photo-preview img')).toHaveCount(2);
+  await dialog.getByLabel("Ben's bingos").fill('RETINAS, NASTIER');
+  await dialog.getByLabel("Sharon's bingos").fill('STAINER');
+  await dialog.getByLabel('Game type', { exact: true }).selectOption('Woogles - League');
   await dialog.getByRole('button', { name: 'Save game', exact: true }).click();
   await expect(dialog).toHaveCount(0);
   expect(await games(page)).toHaveLength(1);
   await page.reload();
   await expect(page.locator('.data-status')).toContainText('1 real games');
+  const backupPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: /Export data/ }).click();
+  const multiBackup = JSON.parse(await readFile((await (await backupPromise).path())!, 'utf8'));
+  expect(multiBackup.games[0].additionalPhotos).toHaveLength(1);
+  expect(multiBackup.games[0].additionalPhotos[0].photoUrl).toMatch(/^data:image/);
+  await nav(page, 'Stats');
+  await page.getByLabel('Report game type').selectOption('Woogles');
+  await expect(page.locator('.bingo-report')).toContainText('RETINAS');
+  await expect(page.locator('.bingo-report')).toContainText('STAINER');
   await nav(page, 'History');
   await page.getByRole('button', { name: /Our kitchen/ }).click();
   await expect(page).toHaveURL(/\/games\//);
   await expect(page.getByRole('dialog').getByText('A lovely real game.')).toBeVisible();
-  await expect(page.getByRole('dialog').getByRole('img')).toBeVisible();
+  await expect(page.getByRole('dialog').getByRole('img')).toHaveCount(2);
+  await expect(page.getByRole('dialog')).toContainText('RETINAS, NASTIER');
   await page.getByRole('button', { name: 'Edit game', exact: true }).click();
   await page.getByRole('dialog').getByRole('spinbutton', { name: "Sharon's score" }).fill('440');
   await page.getByRole('button', { name: 'Save changes', exact: true }).click();
@@ -83,7 +96,7 @@ test('history filters, search, and sorting use recorded data', async ({ page }) 
   await page.getByRole('button', { name: 'Ties', exact: true }).click();
   await expect(page.locator('.history-list .game-card')).toHaveCount(1);
   await page.getByRole('button', { name: 'All games', exact: true }).click();
-  await page.getByLabel('Filter by game type').selectOption('Tournament');
+  await page.getByLabel('Filter by game type').selectOption('In Person - Afternoon');
   await expect(page.locator('.history-list .game-card')).toHaveCount(1);
   await page.getByLabel('Filter by game type').selectOption('all');
   await page.getByLabel('Sort games').selectOption('closest');

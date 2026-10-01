@@ -1,4 +1,4 @@
-import { Game, PlayerId, localDate, margin, newestFirst, winner } from './model';
+import { Game, gameCategory, PlayerId, localDate, margin, newestFirst, winner } from './model';
 export function record(games: Game[]) {
   return { ben: games.filter(g => winner(g) === 'ben').length, sharon: games.filter(g => winner(g) === 'sharon').length, ties: games.filter(g => winner(g) === 'tie').length, total: games.length };
 }
@@ -22,9 +22,9 @@ export function statistics(games: Game[], now = new Date()) {
     const values = games.map(g => g[player === 'ben' ? 'benScore' : 'sharonScore']);
     return { average: average(values), high: values.length ? values.reduce((a, b) => Math.max(a, b)) : null, low: values.length ? values.reduce((a, b) => Math.min(a, b)) : null };
   };
-  const grouped = (key: 'location' | 'gameType') => {
+  const grouped = (key: 'location' | 'gameType' | 'category') => {
     const groups = new Map<string, Game[]>();
-    for (const g of games) { const k = g[key] || 'Not recorded'; groups.set(k, [...(groups.get(k) ?? []), g]); }
+    for (const g of games) { const k = (key === 'category' ? gameCategory(g) : g[key]) || 'Not recorded'; groups.set(k, [...(groups.get(k) ?? []), g]); }
     return [...groups].map(([label, values]) => ({ label, ...record(values) })).sort((a, b) => b.total - a.total || a.label.localeCompare(b.label));
   };
   const margins = new Map<number, number>();
@@ -43,7 +43,7 @@ export function statistics(games: Game[], now = new Date()) {
     closest, biggestBen: biggest('ben'), biggestSharon: biggest('sharon'), highestCombined,
     longest, currentStreak: { player: streakPlayer, count: run }, last5: record(sorted.slice(0, 5)), last10: record(sorted.slice(0, 10)),
     month: record(games.filter(g => g.date.slice(0, 7) === today.slice(0, 7))), year: record(games.filter(g => g.date.slice(0, 4) === today.slice(0, 4))),
-    byLocation: grouped('location'), byType: grouped('gameType'), commonMargins, commonMarginFrequency: frequency,
+    byLocation: grouped('location'), byType: grouped('gameType'), byCategory: grouped('category'), commonMargins, commonMarginFrequency: frequency,
   };
 }
 export interface Milestone { title: string; description: string; gameId: string; kind: 'trophy' | 'spark' | 'heart' }

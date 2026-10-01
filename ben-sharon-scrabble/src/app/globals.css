@@ -450,3 +450,9 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .anniversary-toggle { display:block; margin:7px 0 0 auto; padding:5px 0; background:none; border:0; color:var(--green); text-decoration:underline; text-underline-offset:3px; font-size:10px; cursor:pointer; }
 .anniversary-toggle:focus-visible { outline:2px solid var(--green); outline-offset:4px; }
 @media (max-width:700px) { .app-footer { flex-direction:column; gap:16px; } .anniversary-timer { text-align:center; } .anniversary-digits { justify-content:center; } .anniversary-toggle { margin:7px auto 0; } }
+
+.rivalry-footer > span { flex-wrap:wrap; } .first-counts { font-size:inherit; line-height:1.7; }
+.entry-photo-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; } .entry-photo-grid .photo-preview { margin:0; } .entry-photo-grid img { width:100%; height:150px; object-fit:cover; }
+.detail-gallery { display:grid; gap:14px; } .detail-gallery .detail-photo { margin:0; }
+.stats-filter { margin-bottom:24px; max-width:360px; } .bingo-report { padding:28px; margin-top:24px; } .bingo-report h3 { margin-bottom:12px; }
+.bingo-row { display:flex; flex-direction:column; text-align:left; width:100%; border:0; border-bottom:1px solid var(--line); background:transparent; padding:12px 0; gap:5px; } .bingo-row strong { color:var(--green); letter-spacing:1px; } .bingo-row span { color:var(--muted); font-size:11px; }

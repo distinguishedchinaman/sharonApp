@@ -7,7 +7,7 @@ import { mergeJournal, validateGame, validateJournal, validDate } from '../src/l
 import { localRepository, STORAGE_KEY } from '../src/lib/storage';
 import { parseRatings } from '../src/lib/ratings-parser';
 function game(id: string, b: number, s: number, date = '2026-09-01'): Game {
-  return { id, date, benScore: b, sharonScore: s, location: 'Kitchen', gameType: 'Casual', firstPlayer: '', notes: '', photoUrl: null, isSample: false, createdAt: `${date}T12:00:00Z`, updatedAt: `${date}T12:00:00Z` };
+  return { id, date, benScore: b, sharonScore: s, location: 'Kitchen', gameType: 'In Person - Evening', firstPlayer: '', notes: '', photoUrl: null, isSample: false, createdAt: `${date}T12:00:00Z`, updatedAt: `${date}T12:00:00Z` };
 }
 function journal(games: Game[]): Journal { return { version: 1, games, players: structuredClone(DEFAULT_PLAYERS) }; }
 test('winner and margin handle zero, ties, and either winner', () => {

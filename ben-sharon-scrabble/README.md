@@ -31,9 +31,9 @@ The production server listens on all network interfaces so a phone on the same t
 
 - A Ben vs Sharon dashboard with head-to-head wins, ties, total games, and understated ratings.
 - Fast recording, details with their own URLs, editing, and confirmed deletion.
-- Dates, location suggestions from saved games, game types, first player, notes, and optional photos.
+- Dates, location suggestions, In Person/Woogles categories and subtypes, first player, separate bingo words, notes, and up to 12 photos per game.
 - History with outcome and game-type filters, search, and five sort orders.
-- Score averages and extrema; margins; last 5/10 records; current and longest streaks; month, year, location, and type records.
+- Main-category/subtype reports and a per-player bingo book; score averages and extrema; margins; last 5/10 records; current and longest streaks; month, year, location, and type records.
 - Factual milestones and observations. Ties break a winning streak. Winning percentages include ties in the denominator. The average winning margin excludes ties.
 - Player profiles, manual ratings, and a cached server-side Cross-Tables service.
 - Validated JSON backups with safe merging and separately confirmed replacement.

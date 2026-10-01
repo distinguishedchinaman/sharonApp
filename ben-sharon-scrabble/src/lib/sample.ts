@@ -8,7 +8,7 @@ export function sampleJournal(): Journal {
     return {
       id: `sample-${i + 1}`, date: localDate(date), benScore, sharonScore,
       location: ['Home', 'Coffee shop', 'Home', 'Lake George', 'Home'][i % 5],
-      gameType: i === 4 ? 'Club' : i === 8 ? 'Tournament' : 'Casual',
+      gameType: i === 4 ? 'Woogles - League' : i === 8 ? 'In Person - Afternoon' : 'In Person - Evening',
       firstPlayer: i % 2 ? 'ben' : 'sharon',
       notes: i === 9 ? 'A quiet evening, a pot of tea, and one more game. This is an example entry.' : 'Sample game — just here to show you around.',
       photoUrl: null, isSample: true, createdAt: iso, updatedAt: iso,
