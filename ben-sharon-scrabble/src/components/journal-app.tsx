@@ -12,6 +12,7 @@ import type { RatingResult } from '@/lib/ratings-service';
 import { HomeView } from './home-view';
 import { HistoryView } from './history-view';
 import { StatisticsView } from './statistics-view';
+import { AnniversaryTimer } from './anniversary-timer';
 import { MoreView } from './more-view';
 import { GameEntry } from './game-entry';
 import { GameDetail } from './game-detail';
@@ -122,7 +123,7 @@ export function JournalApp({ initialTab, initialGameId }: { initialTab: Tab; ini
         {initialTab === 'history' && <HistoryView games={journal.games} onOpen={openGame} />}
         {initialTab === 'stats' && <StatisticsView games={journal.games} onOpen={openGame} />}
         {initialTab === 'more' && <MoreView journal={journal} cloud={cloud} syncState={syncState} accountName={connection.playerId === 'sharon' ? 'Sharon' : 'Ben'} onSignOut={connection.signOut ? async () => { try { await connection.signOut!(); } catch (error) { setToast(error instanceof Error ? error.message : 'Could not sign out.'); } } : undefined} localGameCount={localBackup?.games.filter(g => !g.isSample).length ?? 0} onImportLocal={localBackup ? () => { setDialogError(''); setReplaceArmed(false); setDialog({ kind: 'import', incoming: { ...localBackup, games: localBackup.games.filter(g => !g.isSample) } }); } : undefined} onSavePlayer={savePlayer} onExport={exportData} onImport={importData} onRatings={() => void refreshRatings()} ratingsBusy={ratingsBusy} ratingsMessage={ratingsMessage} onRemoveSamples={() => showConfirm({ kind: 'confirm', title: 'Make room for your own story?', message: `Delete all ${journal.games.filter(g => g.isSample).length} sample games? Your real games and player profiles will stay.`, label: 'Delete sample data', action: async () => { await persist({ ...journal, games: journal.games.filter(g => !g.isSample) }); setToast('Sample games removed. Ready for your first real game.'); } })} />}
-        <footer className="app-footer"><span>BEN & SHARON <Heart size={11} /> ONE MORE GAME</span><span>Little moments, kept.</span></footer>
+        <footer className="app-footer"><span>BEN & SHARON <Heart size={11} /> ONE MORE GAME</span><AnniversaryTimer /></footer>
       </>}</main></div>
     <nav className="mobile-nav" aria-label="Mobile navigation">{tabs.map(t => <Link key={t.id} href={t.href} className={initialTab === t.id ? 'active' : ''} aria-current={initialTab === t.id ? 'page' : undefined}><t.icon size={21} strokeWidth={1.8} /><span>{t.label}</span></Link>)}<button className="mobile-record" onClick={recordGame} aria-label="Record game" disabled={!journal || !!loadError}><Plus size={23} /></button></nav>
     {toast && <div className="toast" role="status"><Check size={17} /><span>{toast}</span><button aria-label="Dismiss notification" onClick={() => setToast('')}><X size={16} /></button></div>}
