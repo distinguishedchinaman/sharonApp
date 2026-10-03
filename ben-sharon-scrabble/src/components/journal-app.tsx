@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, BarChart3, BookOpen, Check, ChevronRight, Download, Ellipsis, Heart, House, Plus, ShieldCheck, X } from 'lucide-react';
-import { DEFAULT_PLAYERS, Game, gamePhotos, Journal, Player } from '@/lib/model';
+import { DEFAULT_PLAYERS, Game, gamePhotos, Journal, Player, winner } from '@/lib/model';
+import { prepareVictoryFanfare } from '@/lib/victory-fanfare';
 import { localRepository, SaveOptions, STORAGE_KEY } from '@/lib/storage';
 import { CloudRepository, SyncState } from '@/lib/cloud-repository';
 import { useJournalConnection } from './cloud-provider';
@@ -73,7 +74,14 @@ export function JournalApp({ initialTab, initialGameId }: { initialTab: Tab; ini
     const exists = journal.games.some(g => g.id === game.id);
     const original = dialog?.kind === 'record' ? dialog.game : undefined;
     const expected = original ? { ...journal, games: journal.games.some(g => g.id === original.id) ? journal.games.map(g => g.id === original.id ? original : g) : [...journal.games, original] } : journal;
-    await persist({ ...journal, games: exists ? journal.games.map(g => g.id === game.id ? game : g) : [...journal.games, game] }, undefined, expected);
+    const fanfare = !exists && !original && !game.isSample && winner(game) === 'sharon' ? prepareVictoryFanfare() : undefined;
+    try {
+      await persist({ ...journal, games: exists ? journal.games.map(g => g.id === game.id ? game : g) : [...journal.games, game] }, undefined, expected);
+    } catch (error) {
+      fanfare?.dispose();
+      throw error;
+    }
+    fanfare?.play();
     setDialog(null); setToast(exists ? 'Game updated. The story continues.' : 'Game saved. Here’s to one more.');
   }
   async function savePlayer(player: Player, original?: Player) { if (!journal) return; const expected = original ? { ...journal, players: journal.players.map(p => p.id === original.id ? original : p) } : journal; await persist({ ...journal, players: journal.players.map(p => p.id === player.id ? player : p) }, undefined, expected); setToast(`${player.name}’s ratings saved.`); }
