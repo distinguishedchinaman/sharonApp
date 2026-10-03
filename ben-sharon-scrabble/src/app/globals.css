@@ -127,6 +127,9 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .art-note { position: absolute; bottom: 22px; left: 0; right: 0; text-align: center; font: italic 390 14px var(--serif); color: #765b3d; }
 .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; margin-top: 21px; }
 .metric-card { position: relative; border: 1px solid var(--line); border-radius: 9px; background: var(--paper); padding: 20px 22px; min-height: 127px; }
+.average-range-toggle { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; padding: 4px 0; border: 0; background: transparent; color: var(--green); font: inherit; font-size: 10px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.average-range-toggle:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 2px; }
+.game-first-player { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.5; }
 .metric-label { display: block; font-size: 8.5px; letter-spacing: 1.25px; font-weight: 650; color: #8b8f80; padding-right: 28px; }
 .metric-icon { display: grid; place-items: center; position: absolute; top: 17px; right: 17px; width: 29px; height: 29px; color: #76846b; background: #eef1e7; border-radius: 7px; }
 .metric-icon.terra { color: #ac7958; background: #f5ede0; }

@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { ArrowRight, Flame, Heart, Plus, Sparkles, TrendingUp, Trophy } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -7,8 +8,11 @@ import { milestones, statistics } from '@/lib/statistics';
 import { BoardArt } from './board-art';
 import { EmptyState, GameCard, number } from './ui';
 export function HomeView({ journal, onRecord, onOpen }: { journal: Journal; onRecord: () => void; onOpen: (game: Game) => void }) {
+  const [lastTenOnly, setLastTenOnly] = useState(false);
   const s = statistics(journal.games);
-  const recent = [...journal.games].sort(newestFirst).slice(0, 3);
+  const sorted = [...journal.games].sort(newestFirst);
+  const averages = lastTenOnly ? statistics(sorted.slice(0, 10)) : s;
+  const recent = sorted.slice(0, 3);
   const ben = journal.players.find(p => p.id === 'ben')!;
   const sharon = journal.players.find(p => p.id === 'sharon')!;
   const achievements = milestones(journal.games);
@@ -19,7 +23,7 @@ export function HomeView({ journal, onRecord, onOpen }: { journal: Journal; onRe
       <div className="record-track" aria-label={`Ben ${s.record.ben} wins, Sharon ${s.record.sharon} wins, ${s.record.ties} ties`}><span className="ben-track" style={{ flex: s.record.ben || (s.record.total ? 0 : 1) }} /><span className="tie-track" style={{ flex: s.record.ties }} /><span className="sharon-track" style={{ flex: s.record.sharon || (s.record.total ? 0 : 1) }} /></div>
       <div className="rivalry-footer"><span><Heart size={14} />{s.record.total} games together <span className="first-counts">· Ben first: {journal.games.filter(g => g.firstPlayer === 'ben').length} · Sharon first: {journal.games.filter(g => g.firstPlayer === 'sharon').length}</span></span><Link href="/more">Player ratings <ArrowRight size={13} /></Link></div>
     </div><BoardArt /></section>
-    <div className="metric-grid"><div className="metric-card"><span className="metric-icon"><TrendingUp size={18} /></span><span className="metric-label">AVERAGE SCORE</span><div className="paired-metric"><strong>{number(s.ben.average)}<small>Ben</small></strong><span>/</span><strong>{number(s.sharon.average)}<small>Sharon</small></strong></div></div>
+    <div className="metric-grid"><div className="metric-card"><span className="metric-icon"><TrendingUp size={18} /></span><span className="metric-label">AVERAGE SCORE</span><div className="paired-metric" aria-live="polite"><strong>{number(averages.ben.average)}<small>Ben</small></strong><span>/</span><strong>{number(averages.sharon.average)}<small>Sharon</small></strong></div><button type="button" className="average-range-toggle" aria-pressed={lastTenOnly} aria-label={`Average score: ${lastTenOnly ? 'last 10 games' : 'all games'}. Show ${lastTenOnly ? 'all games' : 'last 10 games'}`} onClick={() => setLastTenOnly(value => !value)}>{lastTenOnly ? 'Last 10' : 'All games'} <span aria-hidden="true">↔</span></button></div>
       <div className="metric-card"><span className="metric-icon terra"><Trophy size={18} /></span><span className="metric-label">PERSONAL BESTS</span><div className="paired-metric"><strong>{number(s.ben.high)}<small>Ben</small></strong><span>/</span><strong>{number(s.sharon.high)}<small>Sharon</small></strong></div></div>
       <div className="metric-card streak-card"><span className="metric-icon amber"><Flame size={19} /></span><span className="metric-label">CURRENT STREAK</span><div className="streak-metric"><strong>{s.currentStreak.count || '—'}</strong><span>{s.currentStreak.player ? <>{s.currentStreak.player === 'ben' ? 'Ben' : 'Sharon'}’s on a roll<small>{s.currentStreak.count === 1 ? 'One win. More to come?' : 'consecutive wins'}</small></> : <>A fresh start<small>The next move is yours.</small></>}</span></div></div></div>
     <div className="home-bottom-grid"><section className="card recent-card"><div className="section-heading"><h2>Fresh from the board</h2><Link href="/history">All games <ArrowRight size={15} /></Link></div>{recent.length ? <div className="game-list">{recent.map(g => <GameCard compact key={g.id} game={g} onOpen={onOpen} />)}</div> : <EmptyState action={<button className="button primary" onClick={onRecord}><Plus size={16} />Record your first game</button>} />}</section>
