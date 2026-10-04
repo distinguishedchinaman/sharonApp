@@ -92,7 +92,7 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .win-avatar:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 .win-avatar img { object-fit: cover; }
 .sharon-win-avatar { overflow: visible; border-radius: 0; animation-delay: -2.2s; animation-duration: 5.2s; }
-.sharon-win-avatar img { object-fit: contain; object-position: center; transform: scale(2.5); }
+.sharon-win-avatar img { object-fit: contain; object-position: center; transform: scale(2.25); }
 @keyframes win-avatar-bob { 0%, 100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(-3px) rotate(1.5deg); } }
 .head-to-head strong { display: block; font: 470 64px/.96 var(--serif); letter-spacing: -3px; }
 .head-to-head .sharon strong { color: var(--green); }
