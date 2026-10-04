@@ -87,12 +87,12 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .head-to-head { display: flex; align-items: center; gap: 25px; margin: 26px 0 18px; }
 .head-to-head > div { text-align: center; min-width: 64px; }
 .head-to-head .player-win-box { min-width: 0; }
-.win-count-row { display: flex; align-items: center; justify-content: center; gap: 5px; }
+.win-count-row { display: flex; align-items: center; justify-content: center; gap: 5px; min-height: clamp(94px, 12vw, 144px); }
 .win-avatar { position: relative; width: clamp(30px, 4vw, 48px); height: 64px; padding: 0; border: 0; background: transparent; cursor: pointer; flex-shrink: 0; overflow: hidden; border-radius: 12px; animation: win-avatar-bob 4.5s ease-in-out infinite; transform-origin: center bottom; }
 .win-avatar:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 .win-avatar img { object-fit: cover; }
 .sharon-win-avatar { overflow: visible; border-radius: 0; animation-delay: -2.2s; animation-duration: 5.2s; }
-.sharon-win-avatar img { object-fit: contain; object-position: center; }
+.sharon-win-avatar img { object-fit: contain; object-position: center; transform: scale(2.5); }
 @keyframes win-avatar-bob { 0%, 100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(-3px) rotate(1.5deg); } }
 .head-to-head strong { display: block; font: 470 64px/.96 var(--serif); letter-spacing: -3px; }
 .head-to-head .sharon strong { color: var(--green); }
