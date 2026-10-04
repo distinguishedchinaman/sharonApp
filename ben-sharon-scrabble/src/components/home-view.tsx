@@ -35,7 +35,7 @@ export function HomeView({ journal, onRecord, onOpen }: { journal: Journal; onRe
   const sharon = journal.players.find(p => p.id === 'sharon')!;
   const achievements = milestones(journal.games);
   return <>
-    <section className="rivalry-card"><div className="rivalry-content"><div className="eyebrow rivalry-eyebrow"><span className="status-dot" />ANNIVERSARY SERIES</div>
+    <section className="rivalry-card"><div className="rivalry-content">
       <div className="head-to-head">
         <div className="player-win-box">
           <div className="win-count-row"><button type="button" className="win-avatar ben-win-avatar" aria-label="Play Ben’s excellent sound" onClick={() => playAvatarSound('ben')}><Image src="/benavatar.png" alt="" fill sizes="48px" /></button><strong aria-label={`${s.record.ben} Ben wins`}>{s.record.ben}</strong></div>
