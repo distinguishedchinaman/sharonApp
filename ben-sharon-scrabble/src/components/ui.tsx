@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useId, useRef } from 'react';
-import { ArrowUpRight, X } from 'lucide-react';
+import { ArrowUpRight, Trophy, X } from 'lucide-react';
 import { formatDate, Game, margin, winner } from '@/lib/model';
 export function Tile({ letter, points = 1, small = false }: { letter: string; points?: number; small?: boolean }) {
   return <span className={`letter-tile ${small ? 'small' : ''}`} aria-hidden="true">{letter}<sub>{points}</sub></span>;
@@ -19,7 +19,7 @@ export function GameCard({ game, onOpen, compact = false }: { game: Game; onOpen
   return <button className={`game-card ${compact ? 'compact' : ''}`} onClick={() => onOpen(game)}>
     <span className="game-date"><span className="date-day">{new Date(`${game.date}T12:00:00`).getDate()}</span><span>{new Date(`${game.date}T12:00:00`).toLocaleDateString('en', { month: 'short' })}</span></span>
     <span className="game-card-main"><span className="game-label">{game.location || game.gameType}{game.isSample && <SampleBadge />}</span><span className="game-subtitle">{formatDate(game.date, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}<span className="dot">·</span>{game.gameType}</span>{compact && <span className="game-first-player">{game.firstPlayer ? `${game.firstPlayer === 'ben' ? 'Ben' : 'Sharon'} went first` : 'First player not recorded'}</span>}</span>
-    <span className="game-scores"><span className={w === 'ben' ? 'score-winner ben' : ''}><small>BEN</small>{game.benScore}</span><span className="score-divider">:</span><span className={w === 'sharon' ? 'score-winner sharon' : ''}><small>SHARON</small>{game.sharonScore}</span></span>
+    <span className="game-scores"><span className={w === 'ben' ? 'score-winner ben' : ''}><small>BEN</small><span className="score-with-trophy">{game.benScore}{w === 'ben' && <Trophy className="score-trophy" aria-label="Winning score" size={12} />}</span></span><span className="score-divider">:</span><span className={w === 'sharon' ? 'score-winner sharon' : ''}><small>SHARON</small><span className="score-with-trophy">{game.sharonScore}{w === 'sharon' && <Trophy className="score-trophy" aria-label="Winning score" size={12} />}</span></span></span>
     <span className={`game-result ${w}`}><span>{w === 'tie' ? 'A tie' : w === 'ben' ? 'Ben wins' : 'Sharon wins'}</span><small>{w === 'tie' ? 'Evenly matched' : `by ${margin(game)} points`}</small></span><ArrowUpRight size={17} className="game-arrow" />
   </button>;
 }

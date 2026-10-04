@@ -1,14 +1,23 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Flame, Heart, Plus, Sparkles, TrendingUp, Trophy } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Game, Journal, newestFirst } from '@/lib/model';
 import { milestones, statistics } from '@/lib/statistics';
+import { prepareGolfClap } from '@/lib/golf-clap';
+import { prepareVictoryFanfare } from '@/lib/victory-fanfare';
 import { BoardArt } from './board-art';
 import { EmptyState, GameCard, number } from './ui';
 export function HomeView({ journal, onRecord, onOpen }: { journal: Journal; onRecord: () => void; onOpen: (game: Game) => void }) {
   const [lastTenOnly, setLastTenOnly] = useState(false);
+  const avatarSound = useRef<ReturnType<typeof prepareGolfClap>>(undefined);
+  useEffect(() => () => avatarSound.current?.dispose(), []);
+  function playAvatarSound(player: 'ben' | 'sharon') {
+    avatarSound.current?.dispose();
+    avatarSound.current = player === 'ben' ? prepareGolfClap() : prepareVictoryFanfare();
+    avatarSound.current?.play();
+  }
   const s = statistics(journal.games);
   const sorted = [...journal.games].sort(newestFirst);
   const averages = lastTenOnly ? statistics(sorted.slice(0, 10)) : s;
@@ -19,7 +28,7 @@ export function HomeView({ journal, onRecord, onOpen }: { journal: Journal; onRe
   return <>
     <section className="rivalry-card"><div className="rivalry-content"><div className="eyebrow rivalry-eyebrow"><span className="status-dot" />ANNIVERSARY SERIES</div>
       <div className="player-match"><div className="player-name"><h2>BEN</h2><div className="subtle-ratings">NWL {ben.naspaRating ?? '—'} <span>·</span> WGPO {ben.wgpoRating ?? '—'}</div></div><span className="match-vs">vs</span><div className="player-name sharon"><h2>SHARON</h2><div className="subtle-ratings">NWL {sharon.naspaRating ?? '—'} <span>·</span> WGPO {sharon.wgpoRating ?? '—'}</div></div></div>
-      <div className="head-to-head"><div className="player-win-box"><div className="win-avatar ben-win-avatar"><Image src="/benavatar.png" alt="" fill sizes="80px" /></div><strong>{s.record.ben}</strong><span>Ben wins</span></div><span className="record-separator">:</span><div className="player-win-box sharon"><div className="win-avatar sharon-win-avatar"><Image src="/sharonavatar-transparent.png" alt="" fill sizes="80px" /></div><strong>{s.record.sharon}</strong><span>Sharon wins</span></div><div className="ties-score"><strong>{s.record.ties}</strong><span>Ties</span></div></div>
+      <div className="head-to-head"><div className="player-win-box"><div className="win-count-row"><button type="button" className="win-avatar ben-win-avatar" aria-label="Play Ben’s golf clap" onClick={() => playAvatarSound('ben')}><Image src="/benavatar.png" alt="" fill sizes="48px" /></button><strong>{s.record.ben}</strong></div><span>Ben wins</span></div><span className="record-separator">:</span><div className="player-win-box sharon"><div className="win-count-row"><strong>{s.record.sharon}</strong><button type="button" className="win-avatar sharon-win-avatar" aria-label="Play Sharon’s tadaa" onClick={() => playAvatarSound('sharon')}><Image src="/sharonavatar-transparent.png" alt="" fill sizes="48px" /></button></div><span>Sharon wins</span></div><div className="ties-score"><strong>{s.record.ties}</strong><span>Ties</span></div></div>
       <div className="record-track" aria-label={`Ben ${s.record.ben} wins, Sharon ${s.record.sharon} wins, ${s.record.ties} ties`}><span className="ben-track" style={{ flex: s.record.ben || (s.record.total ? 0 : 1) }} /><span className="tie-track" style={{ flex: s.record.ties }} /><span className="sharon-track" style={{ flex: s.record.sharon || (s.record.total ? 0 : 1) }} /></div>
       <div className="rivalry-footer"><span><Heart size={14} />{s.record.total} games together <span className="first-counts">· Ben first: {journal.games.filter(g => g.firstPlayer === 'ben').length} · Sharon first: {journal.games.filter(g => g.firstPlayer === 'sharon').length}</span></span><Link href="/more">Player ratings <ArrowRight size={13} /></Link></div>
     </div><BoardArt /></section>
