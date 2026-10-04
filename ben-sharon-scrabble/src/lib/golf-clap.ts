@@ -1,5 +1,5 @@
 // Unlock audio during the Save tap, then play the supplied clip only after success.
-export function prepareGolfClap(audioUrl = '/ben-golf-clap.mp3'): { play: () => void; dispose: () => void } | undefined {
+export function prepareGolfClap(audioUrl = '/ben-excellent.mp3'): { play: () => void; dispose: () => void } | undefined {
   try {
     const Audio = window.AudioContext ?? (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!Audio) return;

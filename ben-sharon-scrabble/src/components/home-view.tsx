@@ -38,7 +38,7 @@ export function HomeView({ journal, onRecord, onOpen }: { journal: Journal; onRe
     <section className="rivalry-card"><div className="rivalry-content"><div className="eyebrow rivalry-eyebrow"><span className="status-dot" />ANNIVERSARY SERIES</div>
       <div className="head-to-head">
         <div className="player-win-box">
-          <div className="win-count-row"><button type="button" className="win-avatar ben-win-avatar" aria-label="Play Ben’s golf clap" onClick={() => playAvatarSound('ben')}><Image src="/benavatar.png" alt="" fill sizes="48px" /></button><strong aria-label={`${s.record.ben} Ben wins`}>{s.record.ben}</strong></div>
+          <div className="win-count-row"><button type="button" className="win-avatar ben-win-avatar" aria-label="Play Ben’s excellent sound" onClick={() => playAvatarSound('ben')}><Image src="/benavatar.png" alt="" fill sizes="48px" /></button><strong aria-label={`${s.record.ben} Ben wins`}>{s.record.ben}</strong></div>
           <div className="player-name"><h2>BEN</h2><div className="subtle-ratings">NWL {ben.naspaRating ?? '—'} <span>·</span> WGPO {ben.wgpoRating ?? '—'}</div></div>
           {streakNote('ben') && <span className="win-streak-note">{streakNote('ben')}</span>}
         </div>
