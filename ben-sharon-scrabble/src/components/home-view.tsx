@@ -10,7 +10,10 @@ import { prepareVictoryFanfare } from '@/lib/victory-fanfare';
 import { TravelSlideshow } from './travel-slideshow';
 import { EmptyState, GameCard, number } from './ui';
 export function HomeView({ journal, onRecord, onOpen }: { journal: Journal; onRecord: () => void; onOpen: (game: Game) => void }) {
-  const [lastTenOnly, setLastTenOnly] = useState(false);
+  const [averageRange, setAverageRange] = useState<'all' | 10 | 5>('all');
+  const nextAverageRange = averageRange === 'all' ? 10 : averageRange === 10 ? 5 : 'all';
+  const averageRangeLabel = averageRange === 'all' ? 'All games' : `Last ${averageRange}`;
+  const nextAverageRangeLabel = nextAverageRange === 'all' ? 'all games' : `last ${nextAverageRange} games`;
   const avatarSound = useRef<ReturnType<typeof prepareGolfClap>>(undefined);
   useEffect(() => () => avatarSound.current?.dispose(), []);
   function playAvatarSound(player: 'ben' | 'sharon') {
@@ -25,7 +28,7 @@ export function HomeView({ journal, onRecord, onOpen }: { journal: Journal; onRe
     return null;
   }
   const sorted = [...journal.games].sort(newestFirst);
-  const averages = lastTenOnly ? statistics(sorted.slice(0, 10)) : s;
+  const averages = averageRange === 'all' ? s : statistics(sorted.slice(0, averageRange));
   const recent = sorted.slice(0, 3);
   const recentBingos = sorted.flatMap(game => [...(game.benBingos ?? []), ...(game.sharonBingos ?? [])]).slice(0, 30);
   const ben = journal.players.find(p => p.id === 'ben')!;
@@ -50,7 +53,7 @@ export function HomeView({ journal, onRecord, onOpen }: { journal: Journal; onRe
       <div className="record-track" aria-label={`Ben ${s.record.ben} wins, Sharon ${s.record.sharon} wins, ${s.record.ties} ties`}><span className="ben-track" style={{ flex: s.record.ben || (s.record.total ? 0 : 1) }} /><span className="tie-track" style={{ flex: s.record.ties }} /><span className="sharon-track" style={{ flex: s.record.sharon || (s.record.total ? 0 : 1) }} /></div>
       <div className="rivalry-footer"><span><Heart size={14} />{s.record.total} games together <span className="first-counts">· Ben first: {journal.games.filter(g => g.firstPlayer === 'ben').length} · Sharon first: {journal.games.filter(g => g.firstPlayer === 'sharon').length}</span></span><Link href="/more">Player ratings <ArrowRight size={13} /></Link></div>
     </div></section>
-    <div className="metric-grid"><div className="metric-card"><span className="metric-icon"><TrendingUp size={18} /></span><span className="metric-label">{lastTenOnly ? 'LAST 10 AVERAGE' : 'ALL-TIME AVERAGE'}</span><div className="paired-metric" aria-live="polite"><strong>{number(averages.ben.average)}<small>Ben</small></strong><span>/</span><strong>{number(averages.sharon.average)}<small>Sharon</small></strong></div><button type="button" className="average-range-toggle" aria-pressed={lastTenOnly} aria-label={`Average score: ${lastTenOnly ? 'last 10 games' : 'all games'}. Show ${lastTenOnly ? 'all games' : 'last 10 games'}`} onClick={() => setLastTenOnly(value => !value)}>{lastTenOnly ? 'Last 10' : 'All games'} <span aria-hidden="true">↔</span></button></div>
+    <div className="metric-grid"><div className="metric-card"><span className="metric-icon"><TrendingUp size={18} /></span><span className="metric-label">{averageRange === 'all' ? 'ALL-TIME AVERAGE' : `LAST ${averageRange} AVERAGE`}</span><div className="paired-metric" aria-live="polite"><strong>{number(averages.ben.average)}<small>Ben</small></strong><span>/</span><strong>{number(averages.sharon.average)}<small>Sharon</small></strong></div><button type="button" className="average-range-toggle" aria-label={`Average score: ${averageRangeLabel}. Show ${nextAverageRangeLabel}`} onClick={() => setAverageRange(nextAverageRange)}>{averageRangeLabel} <span aria-hidden="true">↔</span></button></div>
       <div className="metric-card"><span className="metric-icon terra"><Trophy size={18} /></span><span className="metric-label">PERSONAL BESTS</span><div className="paired-metric"><strong>{number(s.ben.high)}<small>Ben</small></strong><span>/</span><strong>{number(s.sharon.high)}<small>Sharon</small></strong></div></div></div>
     <section className="card home-bingo-cloud" aria-label="Recent bingos">{recentBingos.length ? <ul className="bingo-cloud-words">{recentBingos.map((word, index) => <li key={`${index}-${word}`} className={`bingo-cloud-word bingo-cloud-style-${index % 5}`}>{word}</li>)}</ul> : <p className="bingo-cloud-empty">Your next bingo belongs here.</p>}</section>
     <div className="home-bottom-grid"><section className="card recent-card"><div className="section-heading"><h2>Fresh from the board</h2><Link href="/history">All games <ArrowRight size={15} /></Link></div>{recent.length ? <div className="game-list">{recent.map(g => <GameCard compact key={g.id} game={g} onOpen={onOpen} />)}</div> : <EmptyState action={<button className="button primary" onClick={onRecord}><Plus size={16} />Record your first game</button>} />}</section>
