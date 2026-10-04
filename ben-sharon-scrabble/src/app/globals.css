@@ -170,7 +170,7 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .score-winner.sharon { color: var(--green); }
 .score-winner.ben { color: #987252; }
 .score-with-trophy { display: inline-flex; align-items: center; gap: 3px; }
-.score-trophy { flex-shrink: 0; color: #ad8161; }
+.score-trophy { flex-shrink: 0; color: #b8860b; fill: #f5c542; stroke-width: 1.5; }
 .game-scores .score-divider { color: #c3c6b9; font-size: 17px; }
 .game-result { margin-left: 15px; min-width: 88px; font-size: 11px; text-align: right; color: #907153; }
 .game-result.sharon { color: var(--green); }
