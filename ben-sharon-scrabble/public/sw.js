@@ -1,12 +1,12 @@
 // Local journal data stays in localStorage, separate from disposable app caches.
-const CACHE = 'one-more-game-v5';
+const CACHE = 'one-more-game-v6';
 const PAGES = ['/', '/history', '/stats', '/more'];
 self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
     await cache.addAll(PAGES);
-    const assets = new Set(['/icon.svg', '/icon-192.png', '/icon-512.png', '/manifest.webmanifest']);
+    const assets = new Set(['/icon-sb.svg', '/icon-sb-192.png', '/icon-sb-512.png', '/apple-touch-icon-sb.png', '/manifest-sb.webmanifest']);
     for (const page of PAGES) {
       const response = await cache.match(page);
       const html = await response.text();
