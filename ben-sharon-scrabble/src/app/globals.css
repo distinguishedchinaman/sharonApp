@@ -84,7 +84,7 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .match-vs { color: #a39f8c; font: italic 400 15px var(--serif); margin-bottom: 17px; }
 .subtle-ratings { font-size: 9px; color: #909387; white-space: nowrap; margin-top: 8px; }
 .subtle-ratings span { padding: 0 4px; }
-.head-to-head { display: flex; align-items: center; gap: 25px; margin: 26px 0 18px; }
+.head-to-head { display: flex; align-items: flex-start; gap: 25px; margin: 26px 0 18px; }
 .head-to-head > div { text-align: center; min-width: 64px; }
 .head-to-head .player-win-box { min-width: 0; flex: 1; }
 .win-count-row { display: flex; align-items: center; justify-content: center; gap: 5px; min-height: clamp(94px, 12vw, 144px); }
@@ -127,7 +127,7 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .coffee { width: 100%; height: 100%; background: radial-gradient(ellipse at 40% 35%, #634631, #32251b); border-radius: 50%; border: 3px solid #c5b290; box-shadow: inset 0 1px 4px #17110d; }
 .loose-tile { position: absolute; right: 60px; bottom: 90px; width: 32px; height: 36px; transform: rotate(16deg); font-size: 22px; }
 .art-note { position: absolute; bottom: 22px; left: 0; right: 0; text-align: center; font: italic 390 14px var(--serif); color: #765b3d; }
-.metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; margin-top: 21px; }
+.metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 17px; margin-top: 21px; }
 .metric-card { position: relative; border: 1px solid var(--line); border-radius: 9px; background: var(--paper); padding: 20px 22px; min-height: 127px; }
 .average-range-toggle { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; padding: 4px 0; border: 0; background: transparent; color: var(--green); font: inherit; font-size: 10px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .average-range-toggle:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 2px; }
@@ -479,3 +479,7 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 }
 
 .head-to-head .win-streak-note { font-size: 10px; line-height: 1.5; margin-top: 5px; overflow-wrap: anywhere; }
+
+.head-to-head .record-separator { align-self: flex-start; margin-top: calc(clamp(94px, 12vw, 144px) / 2 - 16px); }
+.head-to-head .ties-score { margin-top: calc(clamp(94px, 12vw, 144px) / 2 - 20px); }
+.photo-source-options { display: grid; gap: 10px; }

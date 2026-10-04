@@ -21,6 +21,17 @@ export function GameEntry({ game, games, onSave, cloud = false }: { game?: Game;
   const [busy, setBusy] = useState(false);
   const [processingPhoto, setProcessingPhoto] = useState(false);
   const [error, setError] = useState('');
+  async function choosePhotos(event: React.ChangeEvent<HTMLInputElement>) {
+    const files = [...(event.target.files ?? [])]; event.target.value = ''; if (!files.length) return;
+    if (photos.length + files.length > 12) { setError('Choose up to 12 photos per game.'); return; }
+    setProcessingPhoto(true); setError('');
+    try {
+      const additions: GamePhoto[] = [];
+      for (const file of files) additions.push({ id: crypto.randomUUID(), photoUrl: await localPhotoStorage.prepare(file) });
+      setPhotos(current => [...current, ...additions]);
+    } catch (err) { setError(err instanceof Error ? err.message : 'Could not read these photos.'); }
+    finally { setProcessingPhoto(false); }
+  }
   async function submit(event: React.FormEvent) {
     event.preventDefault(); setError(''); setBusy(true);
     try {
@@ -40,13 +51,10 @@ export function GameEntry({ game, games, onSave, cloud = false }: { game?: Game;
       <div className="form-row"><label className="field">Ben’s bingos<textarea aria-label="Ben's bingos" rows={2} maxLength={1600} placeholder="Words separated by commas" value={benBingos} onChange={e => setBenBingos(e.target.value)} /></label><label className="field">Sharon’s bingos<textarea aria-label="Sharon's bingos" rows={2} maxLength={1600} placeholder="Words separated by commas" value={sharonBingos} onChange={e => setSharonBingos(e.target.value)} /></label></div>
       <label className="field">A note to remember<textarea rows={3} maxLength={5000} placeholder="The brilliant word. The questionable challenge. The cup of tea." value={notes} onChange={e => setNotes(e.target.value)} /></label>
       <div className="entry-photo-grid">{photos.map((photo, index) => <div className="photo-preview" key={photo.id}>{photo.photoUrl ? <img src={photo.photoUrl} alt={`Game attachment ${index + 1}`} /> : <p>Saved photo</p>}<button type="button" className="icon-button" aria-label={index ? `Remove photo ${index + 1}` : 'Remove photo'} onClick={() => setPhotos(current => current.filter(p => p.id !== photo.id))}><X size={18} /></button></div>)}</div>
-      {photos.length < 12 && <label className="photo-upload"><Camera size={21} /><span>{processingPhoto ? 'Preparing your photos…' : photos.length ? 'Add more game photos' : 'Add a game photo'}<small>Board, scoresheets & leaves · up to 12 photos</small></span><input aria-label="Game photo" type="file" multiple accept="image/jpeg,image/png,image/webp" disabled={processingPhoto || busy} onChange={async e => {
-        const files = [...(e.target.files ?? [])]; e.target.value = ''; if (!files.length) return;
-        if (photos.length + files.length > 12) { setError('Choose up to 12 photos per game.'); return; }
-        setProcessingPhoto(true); setError('');
-        try { const additions: GamePhoto[] = []; for (const file of files) additions.push({ id: crypto.randomUUID(), photoUrl: await localPhotoStorage.prepare(file) }); setPhotos(current => [...current, ...additions]); }
-        catch (err) { setError(err instanceof Error ? err.message : 'Could not read these photos.'); } finally { setProcessingPhoto(false); }
-      }} /></label>}
+      {photos.length < 12 && <div className="photo-source-options">
+        <label className="photo-upload"><Camera size={21} /><span>Take a photo<small>Use your camera</small></span><input aria-label="Take game photo" type="file" accept="image/*" capture="environment" disabled={processingPhoto || busy} onChange={choosePhotos} /></label>
+        <label className="photo-upload"><Camera size={21} /><span>{processingPhoto ? 'Preparing your photos…' : 'Choose from camera roll'}<small>Photos & Live Photo stills · up to 12 photos</small></span><input aria-label="Game photo" type="file" multiple accept="image/*" disabled={processingPhoto || busy} onChange={choosePhotos} /></label>
+      </div>}
 
     </div>}
     {error && <p role="alert" className="error-message">{error}</p>}
