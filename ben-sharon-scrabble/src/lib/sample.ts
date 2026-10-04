@@ -10,7 +10,7 @@ export function sampleJournal(): Journal {
       location: ['Home', 'Coffee shop', 'Home', 'Lake George', 'Home'][i % 5],
       gameType: i === 4 ? 'Woogles - League' : i === 8 ? 'In Person - Afternoon' : 'In Person - Evening',
       firstPlayer: i % 2 ? 'ben' : 'sharon',
-      notes: i === 9 ? 'A quiet evening, a pot of tea, and one more game. This is an example entry.' : 'Sample game — just here to show you around.',
+      notes: i === 9 ? 'A quiet evening, a pot of tea, and Anniversary Series This is an example entry.' : 'Sample game — just here to show you around.',
       photoUrl: null, isSample: true, createdAt: iso, updatedAt: iso,
     };
   });

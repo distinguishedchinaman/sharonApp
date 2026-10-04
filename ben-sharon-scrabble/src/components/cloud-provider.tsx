@@ -12,7 +12,7 @@ interface JournalConnection { cloud: boolean; repository: JournalRepository; pla
 const Context = createContext<JournalConnection>({ cloud: false, repository: localRepository });
 export function useJournalConnection() { return useContext(Context); }
 function AuthCard({ children }: { children: React.ReactNode }) {
-  return <main className="auth-shell"><div className="auth-brand"><Tile letter="S" /><Tile letter="B" points={3} /><span>one more game.</span></div><section className="card auth-card">{children}</section><p className="auth-caption">Two players. One private journal.</p></main>;
+  return <main className="auth-shell"><div className="auth-brand"><Tile letter="S" /><Tile letter="B" points={3} /><span>Anniversary Series</span></div><section className="card auth-card">{children}</section><p className="auth-caption">Two players. One private journal.</p></main>;
 }
 function SignIn({ initialError }: { initialError: string }) {
   const [email, setEmail] = useState('');

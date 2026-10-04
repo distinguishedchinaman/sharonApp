@@ -52,7 +52,7 @@ function validatePlayer(value: unknown): Player {
 }
 export function validateJournal(input: unknown, allowCloudPhotos = false): Journal {
   if (!isObject(input) || input.version !== 1 || !Array.isArray(input.games) || input.games.length > 50_000 || !Array.isArray(input.players) || input.players.length !== 2) {
-    throw new Error('This is not a version 1 One More Game backup. Nothing has been changed.');
+    throw new Error('This is not a version 1 Anniversary Series backup. Nothing has been changed.');
   }
   const games = input.games.map(game => validateGame(game, allowCloudPhotos));
   if (new Set(games.map(g => g.id)).size !== games.length) throw new Error('The backup contains duplicate game IDs. Nothing has been changed.');

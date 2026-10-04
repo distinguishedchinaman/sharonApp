@@ -495,3 +495,16 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .bingo-cloud-style-4 { font-size: clamp(23px, 2.9vw, 35px); color: #9a773d; transform: rotate(1deg); }
 .bingo-cloud-empty { margin-top: 18px; color: var(--muted); font-size: 12px; }
 @media (max-width: 700px) { .home-bingo-cloud { padding: 21px 17px; } .bingo-cloud-words { gap: 12px 16px; padding: 5px; } }
+
+.travel-slideshow { position: relative; min-height: 330px; overflow: hidden; background: #e5e8db; }
+.travel-slide { object-fit: cover; }
+.travel-slide-next { z-index: 1; opacity: 0; transition: opacity 1.2s ease-in-out; }
+.travel-slide-next.is-visible { opacity: 1; }
+.travel-pause { position: absolute; right: 12px; bottom: 12px; z-index: 2; width: 30px; height: 30px; border: 1px solid #ffffff80; border-radius: 50%; background: #1c302a70; color: #fff; cursor: pointer; }
+.travel-pause:focus-visible { outline: 2px solid white; outline-offset: 3px; }
+.brand-name { font-size: 21px; }
+@media (max-width: 700px) { .travel-slideshow { min-height: 0; height: 260px; } .mobile-brand > span:last-child { font-size: 17px; } }
+.home-series-title { margin-bottom: 20px; }
+.sidebar .brand { gap: 8px; }
+.sidebar .brand-name { font-size: 18px; }
+@media (max-width: 900px) and (min-width: 701px) { .sidebar .brand-name { font-size: 15px; } }
