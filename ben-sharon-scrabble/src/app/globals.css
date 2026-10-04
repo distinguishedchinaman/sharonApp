@@ -526,7 +526,10 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 @media (max-width: 700px) { .rivalry-card .head-to-head { gap: 12px; } .head-to-head .subtle-ratings { white-space: normal; line-height: 1.5; } .head-to-head .ties-score { padding-left: 10px; min-width: 32px; } }
 
 .home-average-grid { grid-template-columns: minmax(0, 1fr); }
-.home-average-grid .paired-metric { justify-content: center; gap: 24px; }
+.home-average-grid .metric-card { text-align: center; }
+.home-average-grid .metric-label { padding-right: 0; }
+.home-average-grid .paired-metric { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: start; }
+.home-average-grid .average-range-toggle { justify-content: center; }
 .home-average-grid .paired-metric strong { font-size: 34px; }
 .home-average-grid .paired-metric small { font-size: 12px; }
 @media (max-width: 700px) { .home-average-grid .paired-metric strong { font-size: 28px; } .home-average-grid .paired-metric small { font-size: 11px; } }
