@@ -520,3 +520,7 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 @media (max-width: 900px) and (min-width: 701px) { .rivalry-card .match-vs { font-size: 17px; } }
 @media (max-width: 700px) { .rivalry-card .match-vs { font-size: 22px; } }
 @media (max-width: 370px) { .rivalry-card .match-vs { font-size: 19px; } }
+
+.head-to-head .player-name { margin-top: 10px; text-align: center; }
+.head-to-head .match-vs { flex-shrink: 0; margin-top: calc(clamp(94px, 12vw, 144px) / 2 - 12px); margin-bottom: 0; }
+@media (max-width: 700px) { .rivalry-card .head-to-head { gap: 12px; } .head-to-head .subtle-ratings { white-space: normal; line-height: 1.5; } .head-to-head .ties-score { padding-left: 10px; min-width: 32px; } }
