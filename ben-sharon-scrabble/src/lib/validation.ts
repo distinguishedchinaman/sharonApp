@@ -25,7 +25,7 @@ export function validateGame(value: unknown, allowCloudPhotos = false): Game {
   const bingos = (field: string) => {
     const words = value[field];
     if (words === undefined) return undefined;
-    if (!Array.isArray(words) || words.length > 50 || words.some(word => typeof word !== 'string' || !/^[A-Za-z?]{2,30}$/.test(word))) throw new Error('Enter bingo words separated by commas, using letters or ? for blanks.');
+    if (!Array.isArray(words) || words.length > 50 || words.some(word => typeof word !== 'string' || !/^[A-Za-z?]{2,30}\*?$/.test(word))) throw new Error('Enter bingo words separated by commas, using letters, ? for blanks, and an optional trailing * for phonies.');
     return words.map(word => String(word).toUpperCase());
   };
   const benBingos = bingos('benBingos'), sharonBingos = bingos('sharonBingos');
