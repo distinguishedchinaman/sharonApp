@@ -9,8 +9,12 @@ export function statistics(games: Game[], now = new Date()) {
   const longest = { ben: 0, sharon: 0 };
   let streakPlayer: PlayerId | null = null;
   let run = 0;
+  let brokenStreak: { player: PlayerId; previousPlayer: PlayerId; count: number } | null = null;
   for (const g of chronological) {
     const w = winner(g);
+    brokenStreak = w !== 'tie' && streakPlayer && w !== streakPlayer && run >= 2
+      ? { player: w, previousPlayer: streakPlayer, count: run }
+      : null;
     if (w === 'tie') { streakPlayer = null; run = 0; continue; }
     run = w === streakPlayer ? run + 1 : 1;
     streakPlayer = w;
@@ -41,7 +45,7 @@ export function statistics(games: Game[], now = new Date()) {
     averageMargin: average(games.filter(g => winner(g) !== 'tie').map(margin)),
     averageDifference: average(games.map(g => g.benScore - g.sharonScore)),
     closest, biggestBen: biggest('ben'), biggestSharon: biggest('sharon'), highestCombined,
-    longest, currentStreak: { player: streakPlayer, count: run }, last5: record(sorted.slice(0, 5)), last10: record(sorted.slice(0, 10)),
+    longest, currentStreak: { player: streakPlayer, count: run }, brokenStreak, last5: record(sorted.slice(0, 5)), last10: record(sorted.slice(0, 10)),
     month: record(games.filter(g => g.date.slice(0, 7) === today.slice(0, 7))), year: record(games.filter(g => g.date.slice(0, 4) === today.slice(0, 4))),
     byLocation: grouped('location'), byType: grouped('gameType'), byCategory: grouped('category'), commonMargins, commonMarginFrequency: frequency,
   };

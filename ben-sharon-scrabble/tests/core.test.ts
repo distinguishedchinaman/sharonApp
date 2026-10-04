@@ -89,3 +89,26 @@ test('ratings service coalesces concurrent requests and caches both success and 
     const cached = await getRatings(); assert.equal(calls, 2); assert.ok(cached.every(r => r.cached));
   } finally { globalThis.fetch = originalFetch; }
 });
+
+test('home streak notes describe only the latest streak or break and clear on ties', () => {
+  function sequence(outcomes: string[]) {
+    return outcomes.map((outcome, index) => game(String(index), outcome === 'sharon' ? 300 : 400, outcome === 'ben' ? 300 : 400, `2026-09-${String(index + 1).padStart(2, '0')}`));
+  }
+  for (const player of ['ben', 'sharon'] as const) {
+    const other = player === 'ben' ? 'sharon' : 'ben';
+    const streak = sequence(Array(5).fill(player));
+    assert.deepEqual(statistics(streak).currentStreak, { player, count: 5 });
+    assert.equal(statistics(streak).brokenStreak, null);
+    const broken = sequence([player, player, player, player, player, other]);
+    assert.deepEqual(statistics([...broken].reverse()).brokenStreak, { player: other, previousPlayer: player, count: 5 });
+    const newStreak = statistics(sequence([player, player, other, other]));
+    assert.equal(newStreak.brokenStreak, null);
+    assert.deepEqual(newStreak.currentStreak, { player: other, count: 2 });
+    const tied = statistics(sequence([player, player, other, 'tie']));
+    assert.equal(tied.brokenStreak, null);
+    assert.deepEqual(tied.currentStreak, { player: null, count: 0 });
+    assert.equal(statistics(sequence([player, other])).brokenStreak, null);
+    assert.equal(statistics(sequence([player, player, 'tie', other])).brokenStreak, null);
+  }
+  assert.equal(statistics([]).brokenStreak, null);
+});

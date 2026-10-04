@@ -86,7 +86,7 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .subtle-ratings span { padding: 0 4px; }
 .head-to-head { display: flex; align-items: center; gap: 25px; margin: 26px 0 18px; }
 .head-to-head > div { text-align: center; min-width: 64px; }
-.head-to-head .player-win-box { min-width: 0; }
+.head-to-head .player-win-box { min-width: 0; flex: 1; }
 .win-count-row { display: flex; align-items: center; justify-content: center; gap: 5px; min-height: clamp(94px, 12vw, 144px); }
 .win-avatar { position: relative; width: clamp(30px, 4vw, 48px); height: 64px; padding: 0; border: 0; background: transparent; cursor: pointer; flex-shrink: 0; overflow: hidden; border-radius: 12px; animation: win-avatar-bob 4.5s ease-in-out infinite; transform-origin: center bottom; }
 .win-avatar:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
@@ -477,3 +477,5 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
   .compact .game-result { min-width: 50px; }
   .compact .score-trophy { width: 10px; height: 10px; }
 }
+
+.head-to-head .win-streak-note { font-size: 10px; line-height: 1.5; margin-top: 5px; overflow-wrap: anywhere; }
