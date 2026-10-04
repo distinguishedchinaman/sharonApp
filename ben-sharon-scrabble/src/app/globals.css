@@ -514,4 +514,9 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .rivalry-card { grid-template-columns: 1fr; }
 .home-travel-card { margin-top: 26px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
 
-.rivalry-card .match-vs { font: 550 clamp(32px, 4vw, 44px)/1 var(--serif); margin-bottom: 12px; }
+.rivalry-card .match-vs { font: 550 23px/1 var(--serif); margin-bottom: 12px; }
+
+@media (max-width: 1180px) { .rivalry-card .match-vs { font-size: 19px; } }
+@media (max-width: 900px) and (min-width: 701px) { .rivalry-card .match-vs { font-size: 17px; } }
+@media (max-width: 700px) { .rivalry-card .match-vs { font-size: 22px; } }
+@media (max-width: 370px) { .rivalry-card .match-vs { font-size: 19px; } }
