@@ -549,3 +549,6 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 @media (max-width: 400px) { .detail-victory-avatar { width: 42px; height: 115px; } .detail-victory-avatar.ben { right: calc(100% + 2px); } .detail-victory-avatar.sharon { left: calc(100% + 2px); } }
 
 @media (max-width: 700px) { .mobile-nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); justify-items: center; } }
+
+.game-date { position: relative; }
+.game-photo-indicator { position: absolute; top: calc(100% + 4px); left: 50%; transform: translateX(-50%); color: var(--muted); }
