@@ -555,3 +555,5 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 
 .home-couple-avatar { display: flex; justify-content: center; margin: 12px auto 0; }
 .home-couple-avatar img { width: min(70vw, 320px); height: auto; object-fit: contain; }
+
+.profile-record-links { display: flex; flex-direction: column; gap: 10px; }
