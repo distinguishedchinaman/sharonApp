@@ -541,9 +541,4 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .game-scores .player-score.sharon, .detail-scoreboard .player-score.sharon, .score-input.sharon input,
 .head-to-head .sharon .win-count-row strong, .paired-metric strong:last-child,
 .scores-table td:nth-child(3), .stat-win.green strong, .record-line strong > span.green { color: var(--sharon-score); }
-.winner-flag { display: block; width: 34px; height: auto; margin: 5px auto 0; border-radius: 2px; }
-.detail-scoreboard .winner-flag { width: 48px; height: auto; margin-top: 8px; }
-.compact .winner-flag { width: 28px; }
 
-.detail-scoreboard { align-items: flex-start; }
-.detail-scoreboard > .versus { align-self: center; }
