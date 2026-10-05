@@ -542,3 +542,8 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .head-to-head .sharon .win-count-row strong, .paired-metric strong:last-child,
 .scores-table td:nth-child(3), .stat-win.green strong, .record-line strong > span.green { color: var(--sharon-score); }
 
+.detail-scoreboard .score-with-trophy { position: relative; }
+.detail-victory-avatar { position: absolute; top: 50%; transform: translateY(-50%); width: clamp(48px, 11vw, 80px); height: 140px; object-fit: contain; pointer-events: none; }
+.detail-victory-avatar.ben { right: calc(100% + 6px); }
+.detail-victory-avatar.sharon { left: calc(100% + 6px); }
+@media (max-width: 400px) { .detail-victory-avatar { width: 42px; height: 115px; } .detail-victory-avatar.ben { right: calc(100% + 2px); } .detail-victory-avatar.sharon { left: calc(100% + 2px); } }
