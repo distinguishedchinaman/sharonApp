@@ -534,7 +534,7 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 .home-average-grid .paired-metric small { font-size: 12px; }
 @media (max-width: 700px) { .home-average-grid .paired-metric strong { font-size: 28px; } .home-average-grid .paired-metric small { font-size: 11px; } }
 
-:root { --ben-score: #7C0315; --sharon-score: #114A6B; }
+:root { --ben-score: #7C0315; --sharon-score: #00B5EE; }
 .game-scores .player-score.ben, .detail-scoreboard .player-score.ben, .score-input.ben input,
 .head-to-head .player-win-box:not(.sharon) .win-count-row strong, .paired-metric strong:first-child,
 .scores-table td:nth-child(2), .stat-win:not(.green):not(.tie) strong, .record-line strong > span:first-child { color: var(--ben-score); }
