@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, BarChart3, BookOpen, Check, ChevronRight, Download, Ellipsis, Heart, House, Plus, ShieldCheck, X } from 'lucide-react';
 import { DEFAULT_PLAYERS, Game, gamePhotos, Journal, Player, winner } from '@/lib/model';
@@ -136,6 +137,7 @@ export function JournalApp({ initialTab, initialGameId }: { initialTab: Tab; ini
         {initialTab === 'stats' && <StatisticsView games={journal.games} onOpen={openGame} />}
         {initialTab === 'more' && <MoreView journal={journal} cloud={cloud} syncState={syncState} accountName={connection.playerId === 'sharon' ? 'Sharon' : 'Ben'} onSignOut={connection.signOut ? async () => { try { await connection.signOut!(); } catch (error) { setToast(error instanceof Error ? error.message : 'Could not sign out.'); } } : undefined} localGameCount={localBackup?.games.filter(g => !g.isSample).length ?? 0} onImportLocal={localBackup ? () => { setDialogError(''); setReplaceArmed(false); setDialog({ kind: 'import', incoming: { ...localBackup, games: localBackup.games.filter(g => !g.isSample) } }); } : undefined} onSavePlayer={savePlayer} onExport={exportData} onImport={importData} onRatings={() => void refreshRatings()} ratingsBusy={ratingsBusy} ratingsMessage={ratingsMessage} onRemoveSamples={() => showConfirm({ kind: 'confirm', title: 'Make room for your own story?', message: `Delete all ${journal.games.filter(g => g.isSample).length} sample games? Your real games and player profiles will stay.`, label: 'Delete sample data', action: async () => { await persist({ ...journal, games: journal.games.filter(g => !g.isSample) }); setToast('Sample games removed. Ready for your first real game.'); } })} />}
         <footer className="app-footer"><span>BEN & SHARON <Heart size={11} /> ANNIVERSARY SERIES</span><AnniversaryTimer /></footer>
+        {initialTab === 'home' && <div className="home-couple-avatar"><Image src="/couple-celebration.webp" alt="Ben and Sharon celebrating together" width={473} height={800} sizes="(max-width: 700px) 70vw, 320px" loading="lazy" unoptimized /></div>}
       </>}</main></div>
     <nav className="mobile-nav" aria-label="Mobile navigation">{tabs.slice(0, 2).map(t => <Link key={t.id} href={t.href} className={initialTab === t.id ? 'active' : ''} aria-current={initialTab === t.id ? 'page' : undefined}><t.icon size={21} strokeWidth={1.8} /><span>{t.label}</span></Link>)}<button className="mobile-record" onClick={recordGame} aria-label="Record game" disabled={!journal || !!loadError}><Plus size={23} /></button>{tabs.slice(2).map(t => <Link key={t.id} href={t.href} className={initialTab === t.id ? 'active' : ''} aria-current={initialTab === t.id ? 'page' : undefined}><t.icon size={21} strokeWidth={1.8} /><span>{t.label}</span></Link>)}</nav>
     {toast && <div className="toast" role="status"><Check size={17} /><span>{toast}</span><button aria-label="Dismiss notification" onClick={() => setToast('')}><X size={16} /></button></div>}
