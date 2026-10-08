@@ -8,6 +8,7 @@ import { milestones, statistics } from '@/lib/statistics';
 import { prepareGolfClap } from '@/lib/golf-clap';
 import { prepareVictoryFanfare } from '@/lib/victory-fanfare';
 import { TravelSlideshow } from './travel-slideshow';
+import { LastGameRecap } from './last-game-recap';
 import { EmptyState, GameCard, number } from './ui';
 export function HomeView({ journal, onRecord, onOpen }: { journal: Journal; onRecord: () => void; onOpen: (game: Game) => void }) {
   const [averageRange, setAverageRange] = useState<'all' | 10 | 5>('all');
@@ -55,7 +56,7 @@ export function HomeView({ journal, onRecord, onOpen }: { journal: Journal; onRe
     </div></section>
     <div className="metric-grid home-average-grid"><div className="metric-card"><span className="metric-icon"><TrendingUp size={18} /></span><span className="metric-label">{averageRange === 'all' ? 'ALL-TIME AVERAGE' : `LAST ${averageRange} AVERAGE`}</span><div className="paired-metric" aria-live="polite"><strong>{number(averages.ben.average)}<small>Ben</small></strong><span>/</span><strong>{number(averages.sharon.average)}<small>Sharon</small></strong></div><button type="button" className="average-range-toggle" aria-label={`Average score: ${averageRangeLabel}. Show ${nextAverageRangeLabel}`} onClick={() => setAverageRange(nextAverageRange)}>Change Time Period</button></div>
     </div>
-    {recent[0] && <section className="card last-game-card"><div className="section-heading"><h2>Last game</h2><button type="button" className="text-button" onClick={() => onOpen(recent[0])}>View details <ArrowRight size={15} /></button></div><GameCard compact game={recent[0]} onOpen={onOpen} /></section>}
+    {recent[0] && <LastGameRecap key={recent[0].id} game={recent[0]} onOpen={onOpen} />}
     <div className="home-bottom-grid"><section className="card recent-card"><div className="section-heading"><h2>Fresh from the board</h2><Link href="/history">All games <ArrowRight size={15} /></Link></div>{recent.length ? <div className="game-list">{recent.map(g => <GameCard compact key={g.id} game={g} onOpen={onOpen} />)}</div> : <EmptyState action={<button className="button primary" onClick={onRecord}><Plus size={16} />Record your first game</button>} />}</section>
       <section className="story-card"><div className="story-heading"><Sparkles size={19} /><span className="eyebrow">THE STORY SO FAR</span></div><h2>More than<br />just a score.</h2><p>A few little moments worth remembering.</p>{achievements.length ? achievements.slice(-2).reverse().map(m => <button className="mini-milestone" key={m.title} onClick={() => { const g = journal.games.find(g => g.id === m.gameId); if (g) onOpen(g); }}><span className="milestone-icon">{m.kind === 'heart' ? <Heart size={18} /> : <Sparkles size={18} />}</span><span><strong>{m.title}</strong><small>{m.description}</small></span><ArrowRight size={14} /></button>) : <div className="story-empty">Your first game is your first milestone.<br />Let’s make a little history.</div>}<Link className="story-link" href="/stats">Explore your stats <ArrowRight size={15} /></Link></section>
     </div>

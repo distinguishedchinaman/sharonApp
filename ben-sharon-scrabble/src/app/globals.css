@@ -586,3 +586,20 @@ h1 { font: 430 36px/1.2 var(--serif); letter-spacing: -1.25px; }
 @media (max-width: 700px) { .score-trend-card, .first-player-card { padding: 20px 16px; } .first-player-grid { grid-template-columns: 1fr; gap: 16px; } .score-trend-card .section-heading { flex-wrap: wrap; gap: 12px; } .last-game-card { padding: 20px 16px 8px; } }
 .first-player-card { margin-bottom: 24px; }
 @media (max-width: 700px) { .score-chart { min-width: 0; } .score-chart text { font-size: 22px; } }
+
+.last-game-recap { padding-bottom: 24px; }
+.recap-date { margin: -4px 0 16px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.recap-photo { display: block; position: relative; width: 100%; height: clamp(220px, 40vw, 420px); border: 0; padding: 0; border-radius: 8px; overflow: hidden; background: #f0efe6; }
+button.recap-photo { cursor: pointer; }
+button.recap-photo:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+.recap-photo img { object-fit: contain; }
+.recap-photo-count { position: absolute; bottom: 10px; right: 10px; padding: 6px 10px; border-radius: 20px; background: #263d33d9; color: white; font-size: 10px; }
+.recap-photo-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; height: 100%; color: var(--muted); font-size: 12px; }
+.recap-scoreboard { margin: 42px 0 34px; }
+.recap-result { color: var(--muted); text-align: center; font-size: 11px; margin-bottom: 16px; }
+.recap-small-details { color: var(--muted); font-size: 11px; line-height: 1.7; overflow-wrap: anywhere; }
+.recap-small-details p + p { margin-top: 5px; }
+.recap-small-details b { font-weight: 600; }
+.recap-notes { white-space: pre-wrap; }
+@media (max-width: 700px) { .last-game-recap { padding-bottom: 20px; } }
+@media (max-width: 700px) { .recap-scoreboard { gap: 18px; } .recap-scoreboard strong { font-size: 38px; } .recap-scoreboard .detail-victory-avatar { width: 42px; height: 110px; } }
