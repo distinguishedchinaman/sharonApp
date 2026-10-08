@@ -6,13 +6,13 @@ import { CloudRepository } from '@/lib/cloud-repository';
 import { localRepository, JournalRepository } from '@/lib/storage';
 import { PlayerId } from '@/lib/model';
 import { cloudConfigured, getSupabase } from '@/lib/supabase';
-import { Tile } from './ui';
+import { CapybaraMark } from './capybara-mark';
 interface Connection { householdId: string; playerId: PlayerId; userId: string }
 interface JournalConnection { cloud: boolean; repository: JournalRepository; playerId?: PlayerId; email?: string; signOut?: () => Promise<void> }
 const Context = createContext<JournalConnection>({ cloud: false, repository: localRepository });
 export function useJournalConnection() { return useContext(Context); }
 function AuthCard({ children }: { children: React.ReactNode }) {
-  return <main className="auth-shell"><div className="auth-brand"><Tile letter="S" /><Tile letter="B" points={3} /><span>Anniversary Series</span></div><section className="card auth-card">{children}</section><p className="auth-caption">Two players. One private journal.</p></main>;
+  return <main className="auth-shell"><div className="auth-brand"><CapybaraMark /><span>Anniversary Series</span></div><section className="card auth-card">{children}</section><p className="auth-caption">Two players. One private journal.</p></main>;
 }
 function SignIn({ initialError }: { initialError: string }) {
   const [email, setEmail] = useState('');
