@@ -3,6 +3,24 @@ export function record(games: Game[]) {
   return { ben: games.filter(g => winner(g) === 'ben').length, sharon: games.filter(g => winner(g) === 'sharon').length, ties: games.filter(g => winner(g) === 'tie').length, total: games.length };
 }
 const average = (values: number[]) => values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
+export function firstPlayerStatistics(games: Game[]) {
+  const known = games.filter(g => g.firstPlayer === 'ben' || g.firstPlayer === 'sharon');
+  const forPlayer = (player: PlayerId, first: boolean) => {
+    const selected = known.filter(g => (g.firstPlayer === player) === first);
+    const wins = selected.filter(g => winner(g) === player).length;
+    return { games: selected.length, wins, ties: selected.filter(g => winner(g) === 'tie').length,
+      average: average(selected.map(g => g[player === 'ben' ? 'benScore' : 'sharonScore'])),
+      winRate: selected.length ? 100 * wins / selected.length : null };
+  };
+  return { unknown: games.length - known.length,
+    ben: { first: forPlayer('ben', true), second: forPlayer('ben', false) },
+    sharon: { first: forPlayer('sharon', true), second: forPlayer('sharon', false) } };
+}
+
+export function scoreTrend(games: Game[], limit?: number) {
+  const sorted = [...games].sort(newestFirst);
+  return (limit === undefined ? sorted : sorted.slice(0, limit)).reverse();
+}
 export function statistics(games: Game[], now = new Date()) {
   const sorted = [...games].sort(newestFirst);
   const chronological = [...sorted].reverse();

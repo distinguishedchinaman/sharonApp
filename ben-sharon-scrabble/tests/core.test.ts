@@ -112,3 +112,33 @@ test('home streak notes describe only the latest streak or break and clear on ti
   }
   assert.equal(statistics([]).brokenStreak, null);
 });
+
+test('first-player stats exclude unknown starters and count ties in win-rate denominator', async () => {
+  const { firstPlayerStatistics } = await import('../src/lib/statistics');
+  const games = [
+    { ...game('a', 400, 300), firstPlayer: 'ben' as const },
+    { ...game('b', 300, 300), firstPlayer: 'ben' as const },
+    { ...game('c', 350, 450), firstPlayer: 'sharon' as const },
+    game('unknown', 999, 0),
+  ];
+  const s = firstPlayerStatistics(games);
+  assert.equal(s.unknown, 1);
+  assert.deepEqual(s.ben.first, { games: 2, wins: 1, ties: 1, average: 350, winRate: 50 });
+  assert.deepEqual(s.sharon.second, { games: 2, wins: 0, ties: 1, average: 300, winRate: 0 });
+  assert.equal(s.sharon.first.average, 450); assert.equal(s.sharon.first.winRate, 100);
+  assert.equal(s.ben.second.winRate, 0);
+  assert.equal(firstPlayerStatistics([]).ben.first.average, null);
+  assert.equal(firstPlayerStatistics([game('unknown', 0, 0)]).sharon.second.winRate, null);
+});
+test('score trends select recent games before plotting oldest first without mutating input', async () => {
+  const { scoreTrend } = await import('../src/lib/statistics');
+  const a = game('a', 400, 300, '2026-09-01');
+  const b = { ...game('b', 300, 400, '2026-09-01'), createdAt: '2026-09-01T15:00:00Z' };
+  const c = game('c', 350, 350, '2026-09-02');
+  const input = [c, a, b];
+  assert.deepEqual(scoreTrend(input).map(g => g.id), ['a', 'b', 'c']);
+  assert.deepEqual(scoreTrend(input, 2).map(g => g.id), ['b', 'c']);
+  assert.deepEqual(input.map(g => g.id), ['c', 'a', 'b']);
+  assert.deepEqual(scoreTrend([]), []);
+  assert.deepEqual(scoreTrend([a], 10), [a]);
+});
