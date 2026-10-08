@@ -603,3 +603,5 @@ button.recap-photo:focus-visible { outline: 2px solid var(--green); outline-offs
 .recap-notes { white-space: pre-wrap; }
 @media (max-width: 700px) { .last-game-recap { padding-bottom: 20px; } }
 @media (max-width: 700px) { .recap-scoreboard { gap: 18px; } .recap-scoreboard strong { font-size: 38px; } .recap-scoreboard .detail-victory-avatar { width: 42px; height: 110px; } }
+
+.home-recent-card, .home-story-card { margin-top: 26px; }
