@@ -605,3 +605,10 @@ button.recap-photo:focus-visible { outline: 2px solid var(--green); outline-offs
 @media (max-width: 700px) { .recap-scoreboard { gap: 18px; } .recap-scoreboard strong { font-size: 38px; } .recap-scoreboard .detail-victory-avatar { width: 42px; height: 110px; } }
 
 .home-recent-card, .home-story-card { margin-top: 26px; }
+
+.capybara-mark { flex-shrink: 0; display: grid; place-items: center; width: 62px; height: 62px; padding: 0; border: 0; background: transparent; cursor: pointer; border-radius: 10px; }
+.capybara-mark img { width: 100%; height: 100%; object-fit: contain; }
+.capybara-mark:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+.capybara-mark:active { transform: scale(.96); }
+.capybara-brand { gap: 8px; }
+@media (max-width: 700px) { .mobile-brand .capybara-mark { width: 48px; height: 48px; } .mobile-brand.capybara-brand > span:last-child { margin-left: 0; } }
